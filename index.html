@@ -903,6 +903,119 @@ select option { background: var(--card); color: var(--t1); }
 @media (max-width: 540px) {
   .kpi-row { grid-template-columns: repeat(2,1fr); }
 }
+/* ══════════════════════════════════════
+   LAPORAN FILTER — proper styling
+══════════════════════════════════════ */
+.lap-filter {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--brd);
+}
+.lap-filter-row {
+  display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;
+}
+.lap-filter-group {
+  display: flex; align-items: flex-end; gap: 0;
+  background: var(--card2); border: 1px solid var(--brd);
+  border-radius: var(--r); overflow: hidden;
+}
+.filter-item { display: flex; flex-direction: column; gap: 5px; }
+
+.filter-lbl {
+  font-size: .6rem; font-weight: 600; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--t3);
+  font-family: "JetBrains Mono", monospace;
+  display: flex; align-items: center; gap: 4px;
+  padding: 0 2px;
+}
+.filter-lbl svg { stroke: var(--t3); flex-shrink: 0; }
+
+/* Custom date input — hide browser default calendar icon */
+.filter-date-wrap {
+  position: relative;
+}
+.filter-date-input {
+  width: 148px; height: 40px;
+  padding: 0 12px;
+  background: var(--card2);
+  border: none;
+  border-radius: 0;
+  color: var(--t1);
+  font-family: "JetBrains Mono", monospace;
+  font-size: .82rem; font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: background .16s;
+  appearance: none; -webkit-appearance: none;
+  /* hide calendar icon in webkit */
+  -webkit-inner-spin-button: none;
+}
+.filter-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0; cursor: pointer;
+  position: absolute; right: 0; top: 0; width: 100%; height: 100%;
+}
+.filter-date-input:focus { background: var(--surface); }
+.filter-date-input:hover { background: var(--surface); }
+
+/* calendar icon overlay */
+.filter-date-wrap::after {
+  content: '';
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 14px; height: 14px; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23384e72' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-size: contain;
+}
+.filter-date-input:focus ~ .filter-date-wrap::after,
+.filter-date-wrap:focus-within::after {
+  /* brighten on focus */
+}
+
+/* separator arrow between dates */
+.filter-range-sep {
+  height: 40px; padding: 0 2px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--card2);
+  border-left: 1px solid var(--brd);
+  border-right: 1px solid var(--brd);
+  color: var(--t3);
+}
+.filter-range-sep svg { stroke: var(--t3); }
+
+/* Status select */
+.filter-select {
+  height: 40px; padding: 0 32px 0 12px;
+  background: var(--card2); border: 1px solid var(--brd);
+  border-radius: var(--r); color: var(--t1);
+  font-family: Inter, sans-serif; font-size: .84rem;
+  outline: none; cursor: pointer; min-width: 155px;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23384e72' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  transition: border-color .16s;
+}
+.filter-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+.filter-select option { background: var(--card); color: var(--t1); }
+
+.filter-actions { display: flex; align-items: flex-end; gap: 7px; }
+
+/* Light mode overrides */
+[data-theme="light"] .filter-date-input { background: #fff; color: #0f172a; }
+[data-theme="light"] .filter-date-input:focus,
+[data-theme="light"] .filter-date-input:hover { background: #f8faff; }
+[data-theme="light"] .lap-filter-group { background: #fff; border-color: rgba(37,99,235,.15); }
+[data-theme="light"] .filter-range-sep { background: #fff; border-color: rgba(37,99,235,.15); }
+[data-theme="light"] .filter-select { background-color: #fff; border-color: rgba(37,99,235,.15); color: #0f172a; }
+[data-theme="light"] .filter-lbl { color: #64748b; }
+[data-theme="light"] .filter-date-wrap::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+}
+
+@media (max-width: 700px) {
+  .lap-filter-row { flex-direction: column; align-items: stretch; }
+  .lap-filter-group { width: 100%; }
+  .filter-date-input { width: 100%; flex: 1; }
+  .filter-select { width: 100%; }
+  .filter-actions { justify-content: flex-end; }
+}
 @media (max-width: 900px) {
   #sidebar { transform: translateX(-100%); }
   #sidebar.open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,.6); }
@@ -1253,22 +1366,52 @@ select option { background: var(--card); color: var(--t1); }
             </button>
           </div>
         </div>
-        <div class="fbar">
-          <div><label class="lbl">Dari</label><input type="date" id="lap-dari"></div>
-          <div><label class="lbl">Sampai</label><input type="date" id="lap-sampai"></div>
-          <div><label class="lbl">Status</label>
-            <select id="lap-status" style="min-width:120px">
-              <option value="">Semua Status</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
+        <div class="lap-filter">
+          <!-- Row 1: Date range -->
+          <div class="lap-filter-row">
+            <div class="lap-filter-group">
+              <div class="filter-item">
+                <label class="filter-lbl">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Dari
+                </label>
+                <div class="filter-date-wrap">
+                  <input type="date" id="lap-dari" class="filter-date-input">
+                </div>
+              </div>
+              <div class="filter-range-sep">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+              <div class="filter-item">
+                <label class="filter-lbl">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  Sampai
+                </label>
+                <div class="filter-date-wrap">
+                  <input type="date" id="lap-sampai" class="filter-date-input">
+                </div>
+              </div>
+            </div>
+            <div class="filter-item">
+              <label class="filter-lbl">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Status
+              </label>
+              <select id="lap-status" class="filter-select">
+                <option value="">Semua Status</option>
+                <option value="pending">⏳ Pending</option>
+                <option value="approved">✓ Approved</option>
+                <option value="rejected">✕ Rejected</option>
+              </select>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" onclick="loadLaporan()" style="height:40px;padding:0 18px">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                Generate
+              </button>
+              <button class="btn btn-ghost" onclick="resetLaporan()" style="height:40px;padding:0 14px">Reset</button>
+            </div>
           </div>
-          <button class="btn btn-primary" onclick="loadLaporan()">
-            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-            Generate Laporan
-          </button>
-          <button class="btn btn-ghost" onclick="resetLaporan()">Reset</button>
         </div>
       </div>
 
