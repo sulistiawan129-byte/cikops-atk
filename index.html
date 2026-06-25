@@ -2108,15 +2108,15 @@ function cetakBukti() {
       + '<td>' + esc(d.satuan) + '</td></tr>';
   }).join('');
   document.getElementById('print-area').innerHTML =
-    '<div class="ph"><div><div class="ph-co">PT. [NAMA PERUSAHAAN]</div><div class="ph-sub">General Affairs · Cikarang Plant</div><div class="ph-sub">Dicetak: ' + tgl + '</div></div>'
+    '<div class="ph"><div><div class="ph-co">PT.FRISIAN FLAG INDONESIA</div><div class="ph-sub">Facility Management - Cikarang Plant</div><div class="ph-sub">Dicetak: ' + tgl + '</div></div>'
     + '<div><div class="ph-doc">BUKTI PERMINTAAN ATK</div><div class="ph-id">' + esc(r.request_id) + '</div></div></div>'
     + '<table class="pkv"><tr><td>Tanggal</td><td>' + fmtD(r.tanggal) + '</td><td>NIK</td><td>' + esc(r.nik) + '</td></tr>'
     + '<tr><td>Nama</td><td>' + esc(r.nama) + '</td><td>Departemen</td><td>' + esc(r.departemen) + '</td></tr>'
     + '<tr><td>Helper</td><td colspan="3">' + esc(r.nama_helper || '–') + '</td></tr></table>'
     + '<table class="pitems"><thead><tr><th>#</th><th>Nama Barang</th><th style="text-align:right">Jml</th><th>Satuan</th></tr></thead><tbody>' + items + '</tbody></table>'
     + '<div class="pft"><div><div class="pft-line">Pemohon<br><strong>' + esc(r.nama) + '</strong></div></div>'
-    + '<div><div class="pft-line">Disetujui<br><strong>GA Supervisor</strong></div></div>'
-    + '<div><div class="pft-line">Diserahkan<br><strong>GA Staff</strong></div></div></div>';
+    + '<div><div class="pft-line">Disetujui<br><strong>Admin</strong></div></div>'
+    + '<div><div class="pft-line">Diserahkan<br><strong>Abdul Rahman</strong></div></div></div>';
   window.print();
 }
 
