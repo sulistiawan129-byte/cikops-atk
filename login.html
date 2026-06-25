@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATK System — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ══ TOKENS ══ */
+:root {
+  --bg:        #080f1e;
+  --bg2:       #050b16;
+  --card:      #0d1627;
+  --card2:     #121d35;
+  --brd:       rgba(56,100,220,.18);
+  --brd2:      rgba(56,100,220,.38);
+  --blue:      #2563eb;
+  --blue-l:    #3b82f6;
+  --blue-d:    #1d4ed8;
+  --sky:       #38bdf8;
+  --cyan:      #06b6d4;
+  --ok:        #10b981;
+  --err:       #ef4444;
+  --warn:      #f59e0b;
+  --t1:        #eef2ff;
+  --t2:        #7c93c3;
+  --t3:        #3d5280;
+  --glow:      rgba(37,99,235,.35);
+  --r:         12px;
+  --r-lg:      18px;
+}
+
+/* ══ BASE ══ */
+html, body { height: 100%; }
+body {
+  font-family: Inter, sans-serif;
+  background: var(--bg);
+  color: var(--t1);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ══ ANIMATED BACKGROUND ══ */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* grid lines */
+.bg-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56,100,220,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,100,220,.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* top glow orb */
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.bg-orb-1 {
+  width: 600px; height: 400px;
+  top: -150px; left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(37,99,235,.22) 0%, transparent 70%);
+  animation-delay: 0s;
+}
+.bg-orb-2 {
+  width: 300px; height: 300px;
+  bottom: -100px; right: -50px;
+  background: radial-gradient(ellipse, rgba(6,182,212,.12) 0%, transparent 70%);
+  animation-delay: -3s;
+}
+.bg-orb-3 {
+  width: 200px; height: 200px;
+  bottom: 20%; left: -80px;
+  background: radial-gradient(ellipse, rgba(37,99,235,.1) 0%, transparent 70%);
+  animation-delay: -5s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0px); }
+  50%       { transform: translateX(-50%) translateY(-20px); }
+}
+.bg-orb-2 { animation: orbFloat2 7s ease-in-out infinite; }
+.bg-orb-3 { animation: orbFloat2 9s ease-in-out infinite -2s; }
+@keyframes orbFloat2 {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-15px); }
+}
+
+/* floating particles */
+.particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--blue-l);
+  opacity: 0;
+  animation: particleFloat linear infinite;
+}
+@keyframes particleFloat {
+  0%   { opacity: 0; transform: translateY(0) scale(0); }
+  10%  { opacity: .6; transform: translateY(-20px) scale(1); }
+  90%  { opacity: .2; }
+  100% { opacity: 0; transform: translateY(-120px) scale(0.5); }
+}
+
+/* ══ MAIN LAYOUT ══ */
+.layout {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+  padding: 24px 16px;
+}
+
+/* ══ LOGO ══ */
+.logo-wrap {
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-mark {
+  width: 88px;
+  height: 88px;
+  position: relative;
+}
+
+/* animated ring */
+.logo-mark::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--blue) 0deg, var(--sky) 90deg, transparent 180deg, var(--blue) 360deg);
+  animation: spinRing 4s linear infinite;
+  opacity: .45;
+}
+.logo-mark::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background: var(--bg);
+  margin: 3px;
+}
+@keyframes spinRing { to { transform: rotate(360deg); } }
+
+.logo-inner {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #0d2680;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 32px rgba(37,99,235,.45), 0 4px 20px rgba(0,0,0,.5);
+  overflow: hidden;
+}
+
+/* Frisian Flag logo */
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  display: block;
+}
+
+.logo-text {
+  text-align: center;
+}
+.logo-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -.04em;
+  background: linear-gradient(135deg, #fff 0%, var(--blue-l) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.logo-sub {
+  font-size: .65rem;
+  color: var(--t3);
+  font-family: "JetBrains Mono", monospace;
+  letter-spacing: .14em;
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+/* ══ CARD ══ */
+.card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-radius: var(--r-lg);
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(37,99,235,.06),
+    0 24px 64px rgba(0,0,0,.6),
+    0 0 80px rgba(37,99,235,.05);
+  transition: box-shadow .3s;
+}
+.card:focus-within {
+  box-shadow:
+    0 0 0 1px rgba(37,99,235,.12),
+    0 24px 64px rgba(0,0,0,.6),
+    0 0 80px rgba(37,99,235,.1);
+}
+
+/* top accent */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), var(--sky), var(--blue), transparent);
+  animation: shimmer 3s linear infinite;
+  background-size: 200% 100%;
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* inner glow */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 20%; right: 20%;
+  height: 60px;
+  background: radial-gradient(ellipse, rgba(37,99,235,.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ══ SECTION LABEL ══ */
+.section-lbl {
+  font-size: .6rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--t3);
+  font-family: "JetBrains Mono", monospace;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-lbl::before {
+  content: '';
+  width: 16px; height: 1px;
+  background: var(--t3);
+  display: inline-block;
+}
+
+/* ══ FIELD ══ */
+.field { margin-bottom: 20px; }
+
+/* select wrapper with custom icon */
+.select-wrap {
+  position: relative;
+}
+.select-wrap select {
+  width: 100%;
+  height: 48px;
+  padding: 0 42px 0 14px;
+  background: var(--card2);
+  border: 1px solid var(--brd);
+  border-radius: var(--r);
+  color: var(--t1);
+  font-family: Inter, sans-serif;
+  font-size: .88rem;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.select-wrap select:focus {
+  border-color: var(--blue-l);
+  background: #0f1d38;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18), 0 0 20px rgba(37,99,235,.08);
+}
+.select-wrap select option { background: #0d1627; color: var(--t1); }
+.select-icon {
+  position: absolute;
+  right: 14px; top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--t3);
+  transition: color .18s;
+}
+.select-wrap:focus-within .select-icon { color: var(--blue-l); }
+
+/* NIK hint */
+.nik-hint {
+  margin-top: 8px;
+  min-height: 18px;
+  font-size: .72rem;
+  font-family: "JetBrains Mono", monospace;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+  transition: color .15s;
+}
+.nik-hint.ok    { color: var(--ok); }
+.nik-hint .dot  {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor;
+  animation: dotPulse 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes dotPulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+/* ══ PIN ══ */
+.pin-row-wrap { margin-bottom: 6px; }
+
+.pin-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.pin-cell {
+  position: relative;
+  height: 54px;
+  border-radius: var(--r);
+  background: var(--card2);
+  border: 1.5px solid var(--brd);
+  cursor: text;
+  transition: border-color .18s, background .18s, box-shadow .18s, transform .12s;
+  overflow: hidden;
+}
+
+.pin-cell input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: transparent;
+  font-size: 1px;
+  text-align: center;
+  cursor: text;
+  caret-color: transparent;
+  z-index: 2;
+}
+
+/* dot visual */
+.pin-dot-wrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 1;
+}
+.pin-dot-inner {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--blue-l);
+  opacity: 0;
+  transform: scale(0) rotate(180deg);
+  transition: opacity .2s, transform .2s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 8px rgba(59,130,246,.6);
+}
+
+/* active cell cursor blink */
+.pin-cell.active::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 28%;
+  width: 1.5px; height: 45%;
+  background: var(--blue-l);
+  transform: translateX(-50%);
+  animation: blink .8s step-end infinite;
+  z-index: 3;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.pin-cell.active {
+  border-color: var(--blue-l);
+  background: #0f1d38;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.18), 0 0 16px rgba(37,99,235,.1);
+  transform: translateY(-1px);
+}
+.pin-cell.filled {
+  border-color: rgba(59,130,246,.5);
+  background: rgba(37,99,235,.08);
+}
+.pin-cell.filled .pin-dot-inner {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+.pin-cell.filled.active::after { display: none; }
+
+.pin-cell.shake { animation: shk .35s ease; }
+.pin-cell.err {
+  border-color: rgba(239,68,68,.5) !important;
+  background: rgba(239,68,68,.06) !important;
+}
+@keyframes shk {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-5px); }
+  60%     { transform: translateX(5px); }
+}
+
+/* ══ ATTEMPTS ══ */
+.attempts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 6px;
+}
+.att-dots { display: flex; gap: 5px; }
+.att-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--brd);
+  transition: background .25s, transform .25s;
+}
+.att-dot.fail {
+  background: var(--err);
+  transform: scale(1.2);
+  box-shadow: 0 0 6px rgba(239,68,68,.4);
+}
+.att-txt { font-size: .62rem; color: var(--t3); font-family: "JetBrains Mono", monospace; }
+
+/* ══ MESSAGES ══ */
+.msg {
+  border-radius: var(--r);
+  padding: 11px 14px;
+  font-size: .8rem;
+  line-height: 1.55;
+  display: none;
+  margin-bottom: 14px;
+  animation: msgIn .2s ease;
+}
+@keyframes msgIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+.msg.show { display: flex; align-items: flex-start; gap: 9px; }
+.msg-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.msg-err  { background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2); color: #fca5a5; }
+.msg-lock { background: rgba(245,158,11,.07); border: 1px solid rgba(245,158,11,.2); color: var(--warn); flex-direction: column; align-items: center; text-align: center; }
+
+.lock-timer {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: "JetBrains Mono", monospace;
+  margin-top: 6px;
+  letter-spacing: .05em;
+  background: linear-gradient(135deg, var(--warn), #fde68a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ══ SUBMIT BUTTON ══ */
+.btn-submit {
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(135deg, var(--blue-d) 0%, var(--blue) 50%, var(--blue-l) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: Inter, sans-serif;
+  font-size: .92rem;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .03em;
+  position: relative;
+  overflow: hidden;
+  transition: all .2s;
+  margin-top: 4px;
+  box-shadow: 0 4px 20px rgba(37,99,235,.35);
+}
+.btn-submit::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.15), transparent);
+  transition: left .5s;
+}
+.btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(37,99,235,.5); }
+.btn-submit:hover:not(:disabled)::before { left: 100%; }
+.btn-submit:active:not(:disabled) { transform: translateY(0); box-shadow: 0 4px 16px rgba(37,99,235,.3); }
+.btn-submit:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-txt { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* ══ CARD FOOTER ══ */
+.card-foot {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--brd);
+  font-size: .62rem;
+  color: var(--t3);
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+  line-height: 1.8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.foot-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--t3); }
+
+/* ══ THEME TOGGLE ══ */
+.theme-btn {
+  position: fixed;
+  top: 16px; right: 16px; z-index: 100;
+  width: 38px; height: 38px;
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  transition: all .2s;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3);
+}
+.theme-btn:hover { border-color: var(--blue-l); box-shadow: 0 4px 14px rgba(37,99,235,.2); }
+
+/* ══ LIGHT MODE ══ */
+body.light {
+  --bg:        #eef2fb;
+  --bg2:       #e4eaf7;
+  --card:      #ffffff;
+  --card2:     #f4f7ff;
+  --brd:       rgba(37,99,235,.15);
+  --brd2:      rgba(37,99,235,.3);
+  --t1:        #0f172a;
+  --t2:        #475569;
+  --t3:        #94a3b8;
+}
+body.light .bg-canvas::before {
+  background-image:
+    linear-gradient(rgba(37,99,235,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.04) 1px, transparent 1px);
+}
+body.light .bg-orb-1 { background: radial-gradient(ellipse, rgba(37,99,235,.1) 0%, transparent 70%); }
+body.light .card {
+  box-shadow: 0 0 0 1px rgba(37,99,235,.06), 0 12px 40px rgba(37,99,235,.1);
+}
+body.light .select-wrap select:focus,
+body.light .pin-cell.active { background: #f0f4ff; }
+body.light .logo-title {
+  background: linear-gradient(135deg, #0f172a 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ══ OVERLAY ══ */
+#overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(5,11,22,.88);
+  backdrop-filter: blur(10px);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 18px;
+}
+#overlay.show { display: flex; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 2px solid rgba(37,99,235,.15);
+  border-top-color: var(--blue-l);
+  border-right-color: var(--sky);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-txt { font-size: .72rem; color: var(--t2); font-family: "JetBrains Mono", monospace; letter-spacing: .08em; }
+
+@media (max-width: 480px) {
+  .layout { padding: 16px 12px; }
+  .card { padding: 22px 18px; }
+  .pin-cell { height: 48px; }
+  .logo-mark { width: 76px; height: 76px; }
+  .logo-title { font-size: 1.3rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body id="body">
+
+<!-- BACKGROUND -->
+<div class="bg-canvas">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+  <div class="particles" id="particles"></div>
+</div>
+
+<!-- THEME TOGGLE -->
+<button class="theme-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+
+<!-- MAIN -->
+<div class="layout">
+
+  <!-- LOGO -->
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <div class="logo-inner">
+        <img
+          class="logo-img"
+          id="ff-logo"
+          src="https://careers.frieslandcampina.com/sites/default/files/styles/gcs_theme_laptop_breakgen_4x3/public/2020-05/FrisianFlag.jpg?itok=nQdB-RbZ"
+          alt="Frisian Flag"
+          onerror="loadLogoFallback(this)"
+        >
+      </div>
+    </div>
+    <div class="logo-text">
+      <div class="logo-title">ATK System</div>
+      <div class="logo-sub">PT Frisian Flag Indonesia · Cikarang Plant</div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+
+    <!-- NIK FIELD -->
+    <div class="field">
+      <div class="section-lbl">NIK GA Staff <span style="color:var(--err);margin-left:2px">*</span></div>
+      <div class="select-wrap">
+        <select id="sel-nik" onchange="onNikChange()">
+          <option value="">Pilih NIK Staff...</option>
+        </select>
+        <svg class="select-icon" width="14" height="9" viewBox="0 0 14 9" fill="none">
+          <path d="M1 1l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="nik-hint" id="nik-hint"></div>
+    </div>
+
+    <!-- PIN FIELD -->
+    <div class="pin-row-wrap">
+      <div class="section-lbl">PIN 6 Digit <span style="color:var(--err);margin-left:2px">*</span></div>
+      <div class="pin-grid" id="pin-grid"></div>
+    </div>
+
+    <!-- ATTEMPTS -->
+    <div class="attempts">
+      <div class="att-dots">
+        <div class="att-dot" id="ad0"></div>
+        <div class="att-dot" id="ad1"></div>
+        <div class="att-dot" id="ad2"></div>
+        <div class="att-dot" id="ad3"></div>
+        <div class="att-dot" id="ad4"></div>
+      </div>
+      <div class="att-txt" id="att-txt"></div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="msg msg-err" id="msg-err">
+      <span class="msg-icon">⚠</span>
+      <span id="msg-err-txt"></span>
+    </div>
+
+    <!-- LOCKOUT -->
+    <div class="msg msg-lock" id="msg-lock">
+      <span>Terlalu banyak percobaan gagal. Tunggu sebelum mencoba kembali.</span>
+      <span class="lock-timer" id="lock-timer">15:00</span>
+    </div>
+
+    <!-- SUBMIT -->
+    <button class="btn-submit" id="btn-submit" onclick="doLogin()">
+      <span class="btn-txt">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        Masuk ke Sistem
+      </span>
+    </button>
+
+    <!-- FOOTER -->
+    <div class="card-foot">
+      <span>Akses tercatat audit log</span>
+      <span class="foot-dot"></span>
+      <span>Session 8 jam</span>
+      <span class="foot-dot"></span>
+      <span>v3.2</span>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <div class="spin-txt" id="spin-txt">Memverifikasi...</div>
+</div>
+
+<script>
+/* ═══════════════════════════
+   CONFIG
+═══════════════════════════ */
+var SB_URL = 'https://czihqiflotknmiiigoif.supabase.co';
+var SB_KEY = 'sb_publishable_ryk9HVOJPkn8uUQyvnQlzQ_m2i_8W-a';
+
+/* ═══════════════════════════
+   PARTICLES
+═══════════════════════════ */
+function spawnParticles() {
+  var container = document.getElementById('particles');
+  if (!container) return;
+  for (var i = 0; i < 18; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = Math.random() * 30 + '%';
+        p.style.width  = (Math.random() * 2 + 1.5) + 'px';
+        p.style.height = (Math.random() * 2 + 1.5) + 'px';
+        var dur = (Math.random() * 6 + 6) + 's';
+        var delay = (Math.random() * 8) + 's';
+        p.style.animation = 'particleFloat ' + dur + ' ' + delay + ' ease-in-out infinite';
+        p.style.opacity = (Math.random() * 0.4 + 0.2).toString();
+        container.appendChild(p);
+      }, i * 200);
+    })(i);
+  }
+}
+
+/* ═══════════════════════════
+   THEME
+═══════════════════════════ */
+var _theme = localStorage.getItem('atk_theme') || 'dark';
+
+function applyTheme(t) {
+  _theme = t;
+  document.getElementById('body').classList.toggle('light', t === 'light');
+  var btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = t === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('atk_theme', t);
+}
+
+function toggleTheme() { applyTheme(_theme === 'dark' ? 'light' : 'dark'); }
+
+/* apply immediately */
+applyTheme(_theme);
+
+/* ═══════════════════════════
+   PIN — custom implementation
+═══════════════════════════ */
+var pinVals = ['', '', '', '', '', ''];
+
+function buildPin() {
+  var grid = document.getElementById('pin-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  for (var i = 0; i < 6; i++) {
+    (function(idx) {
+      var cell = document.createElement('div');
+      cell.className = 'pin-cell';
+      cell.id = 'pc' + idx;
+      cell.onclick = function() { getInp(idx).focus(); };
+
+      var inp = document.createElement('input');
+      inp.type = 'tel';
+      inp.inputMode = 'numeric';
+      inp.maxLength = 1;
+      inp.autocomplete = 'off';
+      inp.setAttribute('data-lpignore', 'true');
+      inp.setAttribute('aria-label', 'Digit PIN ke-' + (idx + 1));
+
+      var dotWrap = document.createElement('div');
+      dotWrap.className = 'pin-dot-wrap';
+      var dot = document.createElement('div');
+      dot.className = 'pin-dot-inner';
+      dotWrap.appendChild(dot);
+
+      cell.appendChild(inp);
+      cell.appendChild(dotWrap);
+      grid.appendChild(cell);
+
+      inp.addEventListener('focus', function() {
+        /* remove active from all */
+        for (var j = 0; j < 6; j++) {
+          document.getElementById('pc' + j).classList.remove('active');
+        }
+        cell.classList.add('active');
+      });
+      inp.addEventListener('blur', function() {
+        cell.classList.remove('active');
+      });
+      inp.addEventListener('keydown', function(e) { onPinKey(e, idx); });
+      inp.addEventListener('input',   function(e) { onPinInput(e, idx); });
+    })(i);
+  }
+}
+
+function getCell(i) { return document.getElementById('pc' + i); }
+function getInp(i)  { return getCell(i).querySelector('input'); }
+
+function onPinInput(e, idx) {
+  var raw = e.target.value.replace(/\D/g, '');
+
+  /* paste of full PIN */
+  if (raw.length >= 6) {
+    for (var j = 0; j < 6; j++) {
+      pinVals[j] = raw[j] || '';
+      getCell(j).classList.toggle('filled', !!pinVals[j]);
+      getInp(j).value = pinVals[j] ? '•' : '';
+    }
+    getInp(5).focus();
+    if (getPin().length === 6) setTimeout(doLogin, 120);
+    return;
+  }
+
+  var ch = raw ? raw[0] : '';
+  e.target.value = ch ? '•' : '';
+  pinVals[idx] = ch;
+  getCell(idx).classList.toggle('filled', !!ch);
+  getCell(idx).classList.remove('err');
+  clearErr();
+
+  if (ch && idx < 5) {
+    getInp(idx + 1).focus();
+  }
+  if (idx === 5 && getPin().length === 6) {
+    setTimeout(doLogin, 120);
+  }
+}
+
+function onPinKey(e, idx) {
+  if (e.key === 'Backspace') {
+    if (pinVals[idx]) {
+      pinVals[idx] = '';
+      getInp(idx).value = '';
+      getCell(idx).classList.remove('filled', 'err');
+    } else if (idx > 0) {
+      pinVals[idx - 1] = '';
+      getInp(idx - 1).value = '';
+      getCell(idx - 1).classList.remove('filled', 'err');
+      getInp(idx - 1).focus();
+    }
+    e.preventDefault();
+    return;
+  }
+  if (e.key === 'Enter') { doLogin(); return; }
+  if (e.key === 'Tab')   return;
+  if (e.key.length === 1 && !/\d/.test(e.key)) e.preventDefault();
+}
+
+function getPin() { return pinVals.join(''); }
+
+function clearPinUI() {
+  for (var i = 0; i < 6; i++) {
+    pinVals[i] = '';
+    getInp(i).value = '';
+    getCell(i).classList.remove('filled', 'err', 'active', 'shake');
+  }
+  setTimeout(function() { getInp(0).focus(); }, 50);
+}
+
+function shakePinUI() {
+  for (var i = 0; i < 6; i++) {
+    var c = getCell(i);
+    c.classList.remove('shake');
+    c.classList.add('err');
+    void c.offsetWidth;
+    c.classList.add('shake');
+  }
+  setTimeout(function() {
+    for (var i = 0; i < 6; i++) getCell(i).classList.remove('shake');
+  }, 500);
+}
+
+/* ═══════════════════════════
+   API
+═══════════════════════════ */
+async function rpc(fn, p) {
+  var r = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(p)
+  });
+  var t = await r.text();
+  if (!r.ok) throw new Error('RPC ' + r.status);
+  return JSON.parse(t);
+}
+
+async function sbGet(path) {
+  var r = await fetch(SB_URL + '/rest/v1/' + path, {
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+  });
+  var t = await r.text();
+  if (!r.ok) throw new Error('GET ' + r.status);
+  return JSON.parse(t);
+}
+
+/* ═══════════════════════════
+   INIT
+═══════════════════════════ */
+var users = [], fails = 0, lockTimer = null;
+
+window.addEventListener('DOMContentLoaded', async function() {
+  spawnParticles();
+  buildPin();
+
+  /* redirect if already logged in */
+  var tok = localStorage.getItem('atk_token');
+  var exp = localStorage.getItem('atk_exp');
+  if (tok && exp && new Date(exp) > new Date()) {
+    try {
+      var v = await rpc('validate_session', { p_token: tok });
+      if (v && v.valid) { window.location.href = '/'; return; }
+    } catch(e) {}
+    clearAuth();
+  }
+
+  /* load GA users for dropdown */
+  try {
+    users = await sbGet('ga_users?select=nik,nama,role&is_active=eq.true&order=nama.asc');
+    var sel = document.getElementById('sel-nik');
+    users.forEach(function(u) {
+      var o = document.createElement('option');
+      o.value = u.nik;
+      o.textContent = u.nik + ' — ' + u.nama;
+      sel.appendChild(o);
+    });
+  } catch(e) {
+    console.warn('Could not load users:', e.message);
+  }
+
+  /* restore lockout state */
+  var until = localStorage.getItem('atk_lockout');
+  if (until && new Date(until) > new Date()) {
+    fails = 5; drawDots();
+    startLock(Math.ceil((new Date(until) - Date.now()) / 1000));
+  }
+
+  document.getElementById('sel-nik').focus();
+});
+
+/* ═══════════════════════════
+   NIK SELECT
+═══════════════════════════ */
+function onNikChange() {
+  var nik  = document.getElementById('sel-nik').value;
+  var u    = users.find(function(x) { return x.nik === nik; });
+  var hint = document.getElementById('nik-hint');
+  if (u) {
+    hint.innerHTML = '<span class="dot"></span>' + u.nama + ' &nbsp;·&nbsp; ' + (u.role === 'GA_ADMIN' ? 'Admin' : 'Staff');
+    hint.className = 'nik-hint ok';
+    getInp(0).focus();
+  } else {
+    hint.textContent = '';
+    hint.className = 'nik-hint';
+  }
+  clearErr();
+}
+
+/* ═══════════════════════════
+   LOGIN
+═══════════════════════════ */
+async function doLogin() {
+  var nik = document.getElementById('sel-nik').value;
+  var pin = getPin();
+  if (!nik)           return showErr('Pilih NIK terlebih dahulu');
+  if (pin.length < 6) return showErr('Masukkan 6 digit PIN');
+  if (isLocked())     return;
+
+  setLoad(true);
+  clearErr();
+
+  try {
+    var res = await rpc('verify_pin', { p_nik: nik, p_pin: pin });
+
+    if (!res || !res.success) {
+      setLoad(false);
+      fails++;
+      drawDots();
+      shakePinUI();
+      showErr(res ? res.error : 'PIN salah. Periksa dan coba kembali.');
+      clearPinUI();
+      if (fails >= 5) startLock(15 * 60);
+      return;
+    }
+
+    /* success */
+    localStorage.setItem('atk_token', res.session_token);
+    localStorage.setItem('atk_exp',   res.expires_at);
+    localStorage.setItem('atk_nik',   res.nik);
+    localStorage.setItem('atk_nama',  res.nama);
+    localStorage.setItem('atk_role',  res.role);
+    fails = 0; drawDots();
+
+    document.getElementById('spin-txt').textContent = 'Login berhasil...';
+    setTimeout(function() { window.location.href = '/'; }, 700);
+
+  } catch(e) {
+    setLoad(false);
+    showErr('Koneksi gagal. Periksa jaringan dan coba lagi.');
+  }
+}
+
+/* ═══════════════════════════
+   LOCKOUT
+═══════════════════════════ */
+function isLocked() {
+  var u = localStorage.getItem('atk_lockout');
+  if (!u) return false;
+  if (new Date(u) > new Date()) return true;
+  localStorage.removeItem('atk_lockout');
+  return false;
+}
+
+function startLock(sec) {
+  var until = new Date(Date.now() + sec * 1000);
+  localStorage.setItem('atk_lockout', until.toISOString());
+  document.getElementById('btn-submit').disabled = true;
+  document.getElementById('msg-lock').classList.add('show');
+  document.getElementById('msg-err').classList.remove('show');
+  var rem = sec;
+
+  function tick() {
+    rem--;
+    var m = Math.floor(rem / 60), s = rem % 60;
+    document.getElementById('lock-timer').textContent =
+      String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    if (rem <= 0) {
+      clearInterval(lockTimer);
+      document.getElementById('msg-lock').classList.remove('show');
+      document.getElementById('btn-submit').disabled = false;
+      localStorage.removeItem('atk_lockout');
+      fails = 0; drawDots();
+    }
+  }
+  tick();
+  lockTimer = setInterval(tick, 1000);
+}
+
+/* ═══════════════════════════
+   HELPERS
+═══════════════════════════ */
+function drawDots() {
+  for (var i = 0; i < 5; i++) {
+    document.getElementById('ad' + i).className = 'att-dot' + (i < fails ? ' fail' : '');
+  }
+  document.getElementById('att-txt').textContent = fails > 0 ? fails + '/5 percobaan' : '';
+}
+
+function showErr(m) {
+  document.getElementById('msg-err-txt').textContent = m;
+  document.getElementById('msg-err').classList.add('show');
+}
+function clearErr() { document.getElementById('msg-err').classList.remove('show'); }
+
+function setLoad(on) {
+  document.getElementById('overlay').classList.toggle('show', on);
+  document.getElementById('btn-submit').disabled = on;
+}
+
+function clearAuth() {
+  ['atk_token','atk_exp','atk_nik','atk_nama','atk_role'].forEach(function(k) {
+    localStorage.removeItem(k);
+  });
+}
+
+/* ═══════════════════════════
+   LOGO FALLBACK CHAIN
+   Tries multiple sources if primary fails
+═══════════════════════════ */
+var _logoTried = 0;
+var _logoSrcs = [
+  'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Frisian_Flag_logo.svg/512px-Frisian_Flag_logo.svg.png',
+  'https://upload.wikimedia.org/wikipedia/en/thumb/6/65/Frisian_Flag_logo.svg/400px-Frisian_Flag_logo.svg.png',
+];
+
+function loadLogoFallback(img) {
+  if (_logoTried < _logoSrcs.length) {
+    img.src = _logoSrcs[_logoTried++];
+  } else {
+    /* final fallback: SVG text logo */
+    var parent = img.parentElement;
+    parent.innerHTML =
+      '<svg width="70" height="70" viewBox="0 0 70 70" fill="none">' +
+      '<circle cx="35" cy="35" r="33" fill="#1B4FA8" stroke="#fff" stroke-width="2"/>' +
+      '<text x="35" y="28" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="-0.5">FRISIAN</text>' +
+      '<text x="35" y="44" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="-0.5">FLAG</text>' +
+      '<circle cx="51" cy="20" r="5" fill="#E31E2A"/>' +
+      '<circle cx="58" cy="32" r="3.5" fill="#E31E2A"/>' +
+      '<circle cx="18" cy="48" r="5" fill="#E31E2A"/>' +
+      '<circle cx="12" cy="36" r="3.5" fill="#E31E2A"/>' +
+      '</svg>';
+  }
+}
+</script>
+</body>
+</html>

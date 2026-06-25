@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Permintaan ATK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-900: #060d1a;
+  --c-800: #0b1221;
+  --c-700: #111c32;
+  --c-600: #162040;
+  --c-500: #1e2d52;
+  --blue:  #2563eb;
+  --blue-l:#3b82f6;
+  --sky:   #38bdf8;
+  --ok:    #10b981;
+  --err:   #ef4444;
+  --warn:  #f59e0b;
+  --t1:    #f0f4ff;
+  --t2:    #8fa3c8;
+  --t3:    #4a6080;
+  --brd:   #1e2d52;
+  --shadow: rgba(2, 6, 16, .35);
+  --r:     12px;
+  --r-sm:  9px;
+  --r-lg:  16px;
+  --ease:  cubic-bezier(.4, 0, .2, 1);
+}
+
+[data-theme="light"] {
+  --c-900: #eef2fb;
+  --c-800: #f5f8ff;
+  --c-700: #ffffff;
+  --c-600: #e8eeff;
+  --c-500: #dde4f7;
+  --ok:    #059669;
+  --err:   #dc2626;
+  --warn:  #d97706;
+  --t1:    #0f172a;
+  --t2:    #475569;
+  --t3:    #94a3b8;
+  --brd:   #dde4f7;
+  --shadow: rgba(37, 99, 235, .08);
+}
+
+html { height: 100%; }
+body {
+  font-family: Inter, sans-serif;
+  background: var(--c-800);
+  color: var(--t1);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: 96px;
+  background-image:
+    linear-gradient(rgba(37,99,235,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.025) 1px, transparent 1px);
+  background-size: 36px 36px;
+  transition: background-color .25s var(--ease), color .25s var(--ease);
+  opacity: 0;
+  animation: bodyIn .45s var(--ease) forwards;
+}
+[data-theme="light"] body { background-image: linear-gradient(rgba(37,99,235,.015) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,.015) 1px, transparent 1px); }
+@keyframes bodyIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ══════════════ LANDING PAGE ══════════════ */
+#landing {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--c-900);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  transition: opacity .45s var(--ease), visibility .45s var(--ease);
+  background-image:
+    radial-gradient(circle at 18% 14%, rgba(37,99,235,.16), transparent 42%),
+    radial-gradient(circle at 84% 82%, rgba(56,189,248,.12), transparent 45%),
+    linear-gradient(rgba(37,99,235,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.025) 1px, transparent 1px);
+  background-size: auto, auto, 36px 36px, 36px 36px;
+}
+[data-theme="light"] #landing {
+  background: var(--c-900);
+  background-image:
+    radial-gradient(circle at 18% 14%, rgba(37,99,235,.10), transparent 42%),
+    radial-gradient(circle at 84% 82%, rgba(56,189,248,.10), transparent 45%),
+    linear-gradient(rgba(37,99,235,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,99,235,.02) 1px, transparent 1px);
+}
+#landing.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+.landing-card {
+  max-width: 460px; width: 100%; text-align: center;
+  animation: landingIn .6s var(--ease) both;
+}
+@keyframes landingIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.landing-mark {
+  width: 64px; height: 64px; margin: 0 auto 26px;
+  background: var(--c-700); border: 1px solid var(--brd);
+  border-radius: 16px; font-size: 26px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 30px var(--shadow);
+  animation: markFloat 4.5s ease-in-out infinite;
+}
+@keyframes markFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+.landing-eyebrow {
+  font-family: "JetBrains Mono", monospace; font-size: .68rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--sky);
+  margin-bottom: 14px; opacity: 0; animation: fadeUp .5s var(--ease) .1s forwards;
+}
+.landing-title {
+  font-size: clamp(2rem, 9vw, 2.9rem); font-weight: 800; letter-spacing: -.03em;
+  line-height: 1.05; margin-bottom: 16px;
+  opacity: 0; animation: fadeUp .55s var(--ease) .18s forwards;
+}
+.landing-title span { color: var(--blue-l); }
+.landing-sub {
+  font-size: .95rem; color: var(--t2); line-height: 1.65; max-width: 380px;
+  margin: 0 auto 30px;
+  opacity: 0; animation: fadeUp .55s var(--ease) .26s forwards;
+}
+.landing-sub strong { color: var(--t1); font-weight: 600; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.btn-landing {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 15px 32px; background: var(--blue); color: #fff;
+  border: none; border-radius: var(--r-sm);
+  font-family: Inter, sans-serif; font-size: .92rem; font-weight: 700;
+  letter-spacing: .01em; cursor: pointer;
+  transition: background-color .18s var(--ease), box-shadow .18s var(--ease), transform .15s var(--ease);
+  opacity: 0; animation: fadeUp .55s var(--ease) .34s forwards;
+}
+.btn-landing:hover { background: var(--blue-l); box-shadow: 0 8px 26px rgba(37,99,235,.4); transform: translateY(-2px); }
+.btn-landing:active { transform: translateY(0) scale(.98); }
+.landing-foot {
+  margin-top: 34px; font-family: "JetBrains Mono", monospace;
+  font-size: .64rem; letter-spacing: .08em; color: var(--t3);
+  opacity: 0; animation: fadeUp .5s var(--ease) .42s forwards;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11,18,33,.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--brd);
+  padding: 0 18px; height: 56px;
+  display: flex; align-items: center; gap: 11px;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease);
+}
+[data-theme="light"] .topbar { background: rgba(245,248,255,.95); }
+.topbar-icon {
+  font-size: 17px; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(37,99,235,.12); border-radius: 9px;
+}
+.topbar-text h1 { font-size: .9rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+.topbar-text p  { font-size: .62rem; color: var(--t3); font-family: "JetBrains Mono", monospace; margin-top: 2px; letter-spacing: .04em; }
+.topbar-right { margin-left: auto; }
+.btn-theme {
+  width: 34px; height: 34px;
+  background: var(--c-600); border: 1px solid var(--brd);
+  border-radius: var(--r-sm); cursor: pointer; font-size: .9rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .18s var(--ease), transform .15s var(--ease), background-color .18s var(--ease);
+}
+.btn-theme:hover { border-color: var(--blue); transform: translateY(-1px); }
+.btn-theme:active { transform: scale(.93); }
+
+/* ── MAIN ── */
+.main { max-width: 560px; margin: 0 auto; padding: 18px 16px 8px; }
+
+/* ── SUCCESS / DETAIL PERMINTAAN ── */
+.success-box {
+  display: none; text-align: center;
+  padding: 36px 0 8px;
+}
+.success-box.show { display: block; animation: successIn .5s var(--ease); }
+@keyframes successIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.success-icon {
+  width: 64px; height: 64px;
+  background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.25);
+  border-radius: 50%; font-size: 25px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+  animation: popIn .45s var(--ease) .05s both;
+}
+@keyframes popIn { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+.success-title { font-size: 1.1rem; font-weight: 700; color: var(--ok); margin-bottom: 7px; letter-spacing: -.01em; }
+.success-sub   { font-size: .84rem; color: var(--t2); line-height: 1.6; max-width: 380px; margin: 0 auto; }
+
+/* — kartu bukti permintaan (yang di-screenshot) — */
+.proof-card {
+  margin: 22px 0 18px; text-align: left;
+  background: var(--c-700); border: 1px solid var(--brd);
+  border-radius: var(--r-lg); overflow: hidden;
+  animation: popIn .4s var(--ease) .1s both;
+}
+.proof-head {
+  padding: 16px 18px; border-bottom: 1px dashed var(--brd);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: rgba(16,185,129,.06);
+}
+.proof-head-l { display: flex; align-items: center; gap: 10px; text-align: left; }
+.proof-head-icon {
+  width: 30px; height: 30px; flex: none; border-radius: 9px;
+  background: rgba(16,185,129,.14); color: var(--ok);
+  display: flex; align-items: center; justify-content: center; font-size: 14px;
+}
+.proof-head-title { font-size: .82rem; font-weight: 700; }
+.proof-head-sub { font-size: .65rem; color: var(--t3); font-family: "JetBrains Mono", monospace; margin-top: 1px; }
+.proof-status {
+  font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--warn); background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3);
+  border-radius: 20px; padding: 4px 10px; white-space: nowrap;
+}
+.proof-body { padding: 18px; }
+.proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; margin-bottom: 16px; }
+@media (max-width: 380px) { .proof-grid { grid-template-columns: 1fr; } }
+.proof-field-label {
+  font-size: .61rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--t3); font-family: "JetBrains Mono", monospace; margin-bottom: 4px;
+}
+.proof-field-value { font-size: .9rem; font-weight: 600; color: var(--t1); }
+.proof-field-value.mono { font-family: "JetBrains Mono", monospace; color: var(--sky); font-size: .85rem; font-weight: 500; }
+.proof-divider { border-top: 1px solid var(--brd); margin: 4px 0 14px; }
+.proof-items-label {
+  font-size: .61rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--t3); font-family: "JetBrains Mono", monospace; margin-bottom: 9px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.proof-item-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--brd); font-size: .85rem;
+}
+.proof-item-row:last-child { border-bottom: none; }
+.proof-item-name { font-weight: 500; }
+.proof-item-qty { font-family: "JetBrains Mono", monospace; color: var(--blue-l); font-weight: 600; white-space: nowrap; }
+.proof-foot {
+  padding: 12px 18px; border-top: 1px dashed var(--brd);
+  font-size: .68rem; color: var(--t3); font-family: "JetBrains Mono", monospace;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+
+/* — instruksi screenshot — */
+.proof-note {
+  display: flex; align-items: flex-start; gap: 10px; text-align: left;
+  background: rgba(37,99,235,.08); border: 1px solid rgba(37,99,235,.22);
+  border-radius: var(--r-sm); padding: 13px 14px; margin-bottom: 18px;
+  font-size: .79rem; color: var(--t2); line-height: 1.55;
+}
+.proof-note-icon { font-size: 16px; flex: none; margin-top: 1px; }
+.proof-note strong { color: var(--t1); }
+
+.proof-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-new, .btn-shot {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 12px 22px; border-radius: var(--r-sm);
+  font-family: Inter, sans-serif; font-size: .84rem; font-weight: 600; cursor: pointer;
+  transition: all .18s var(--ease); border: 1px solid var(--brd);
+}
+.btn-new { background: var(--c-600); color: var(--t2); }
+.btn-new:hover { border-color: var(--blue); color: var(--t1); transform: translateY(-1px); box-shadow: 0 6px 18px var(--shadow); }
+.btn-new:active { transform: translateY(0) scale(.98); }
+.btn-shot { background: rgba(37,99,235,.12); color: var(--blue-l); border-color: rgba(37,99,235,.32); }
+.btn-shot:hover { background: rgba(37,99,235,.2); border-color: var(--blue); transform: translateY(-1px); }
+.btn-shot:active { transform: translateY(0) scale(.98); }
+.btn-shot.copied { background: rgba(16,185,129,.16); color: var(--ok); border-color: rgba(16,185,129,.35); }
+
+/* ── SECTION ── */
+.section {
+  background: var(--c-700); border: 1px solid var(--brd);
+  border-radius: var(--r-lg); margin-bottom: 14px; overflow: hidden;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+  animation: sectionIn .4s var(--ease) both;
+}
+.section:nth-of-type(1) { animation-delay: .03s; }
+.section:nth-of-type(2) { animation-delay: .09s; }
+@keyframes sectionIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.section:hover { border-color: rgba(37,99,235,.32); box-shadow: 0 8px 24px var(--shadow); }
+.section-head {
+  padding: 14px 18px 12px;
+  border-bottom: 1px solid var(--brd);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-label {
+  font-size: .63rem; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--t3);
+  font-family: "JetBrains Mono", monospace;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-body { padding: 18px; }
+
+/* ── FORM ── */
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+@media (max-width: 400px) { .row-2 { grid-template-columns: 1fr; } }
+.field-g { margin-bottom: 16px; position: relative; }
+.field-g:last-child { margin-bottom: 0; }
+
+.lbl {
+  display: block; font-size: .64rem; font-weight: 600;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--t3); margin-bottom: 7px;
+  font-family: "JetBrains Mono", monospace;
+}
+.lbl .req { color: var(--err); margin-left: 2px; }
+
+input[type=text],
+input[type=number],
+select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--c-800);
+  border: 1px solid var(--brd);
+  border-radius: var(--r-sm);
+  color: var(--t1);
+  font-family: Inter, sans-serif;
+  font-size: .89rem;
+  outline: none;
+  transition: border-color .18s var(--ease), box-shadow .18s var(--ease), background-color .18s var(--ease);
+  appearance: none; -webkit-appearance: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6080' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px; cursor: pointer;
+}
+input::placeholder { color: var(--t3); opacity: .8; }
+input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+input:hover:not([readonly]):not(:focus), select:hover:not(:focus) { border-color: rgba(37,99,235,.4); }
+input[readonly] { background: var(--c-600); color: var(--t2); border-color: var(--brd); cursor: default; }
+select option { background: var(--c-700); color: var(--t1); }
+
+.hint { font-size: .71rem; margin-top: 6px; min-height: 16px; font-family: "JetBrains Mono", monospace; color: var(--t3); display: flex; align-items: center; gap: 5px; transition: color .15s var(--ease); }
+.hint.ok   { color: var(--ok); }
+.hint.warn { color: var(--warn); }
+.hint.err  { color: var(--err); }
+
+/* ── AUTOCOMPLETE DROPDOWN (shared: karyawan & barang) ── */
+.ac-wrap { position: relative; }
+.ac-list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 6px);
+  background: var(--c-700); border: 1px solid var(--brd);
+  border-radius: var(--r-sm); box-shadow: 0 12px 32px var(--shadow);
+  max-height: 230px; overflow-y: auto; z-index: 60;
+  display: none; opacity: 0; transform: translateY(-4px);
+  transition: opacity .14s var(--ease), transform .14s var(--ease);
+}
+.ac-list.show { display: block; opacity: 1; transform: none; }
+.ac-item {
+  padding: 10px 14px; cursor: pointer; font-size: .85rem;
+  border-bottom: 1px solid var(--brd);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  transition: background-color .1s var(--ease);
+}
+.ac-item:last-child { border-bottom: none; }
+.ac-item:hover, .ac-item.active { background: rgba(37,99,235,.1); }
+.ac-item-name { font-weight: 500; }
+.ac-item-name mark { background: rgba(37,99,235,.28); color: var(--blue-l); border-radius: 3px; padding: 0 1px; }
+.ac-item-meta { font-size: .68rem; color: var(--t3); font-family: "JetBrains Mono", monospace; white-space: nowrap; }
+.ac-item-meta.warn { color: var(--warn); }
+.ac-item-meta.err  { color: var(--err); }
+.ac-empty { padding: 16px; text-align: center; color: var(--t3); font-size: .8rem; font-style: italic; }
+
+/* ── ADD ROW ── */
+.add-qty-row { display: grid; grid-template-columns: 1fr 92px; gap: 11px; margin-top: 14px; }
+.btn-add {
+  width: 100%; margin-top: 14px; padding: 12px;
+  background: rgba(37,99,235,.1); color: var(--blue-l);
+  border: 1px solid rgba(37,99,235,.3); border-radius: var(--r-sm);
+  font-family: Inter, sans-serif; font-size: .86rem; font-weight: 600;
+  cursor: pointer; transition: all .18s var(--ease);
+}
+.btn-add:hover { background: rgba(37,99,235,.18); border-color: var(--blue); transform: translateY(-1px); }
+.btn-add:active { transform: translateY(0) scale(.98); }
+.btn-add.pulse { animation: addPulse .35s var(--ease); }
+@keyframes addPulse { 0% { transform: scale(1); } 40% { transform: scale(.97); background: rgba(37,99,235,.28); } 100% { transform: scale(1); } }
+
+/* ── KERANJANG ── */
+.kd-wrap {
+  margin-top: 16px; border: 1px solid var(--brd);
+  border-radius: var(--r-sm); overflow: hidden;
+}
+.kd-head {
+  display: grid; grid-template-columns: 1fr 56px 56px 32px;
+  background: rgba(30,45,82,.5); padding: 8px 13px;
+  font-size: .6rem; font-weight: 600; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--t3);
+  font-family: "JetBrains Mono", monospace;
+}
+[data-theme="light"] .kd-head { background: rgba(37,99,235,.06); }
+.kd-empty { padding: 28px; text-align: center; color: var(--t3); font-size: .83rem; font-style: italic; }
+.kd-row {
+  display: grid; grid-template-columns: 1fr 56px 56px 32px;
+  align-items: center; padding: 11px 13px;
+  border-top: 1px solid var(--brd);
+  font-size: .84rem; transition: background-color .12s var(--ease);
+  animation: rowIn .25s var(--ease);
+}
+@keyframes rowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+.kd-row.removing { animation: rowOut .18s var(--ease) forwards; }
+@keyframes rowOut { to { opacity: 0; transform: translateX(10px); height: 0; padding-top: 0; padding-bottom: 0; margin: 0; } }
+.kd-row:hover { background: rgba(37,99,235,.04); }
+.kd-name { font-weight: 500; }
+.kd-qty  { font-family: "JetBrains Mono", monospace; font-weight: 600; color: var(--blue-l); }
+.kd-sat  { font-size: .75rem; color: var(--t3); }
+.kd-del {
+  width: 27px; height: 27px;
+  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.18);
+  border-radius: 7px; color: #fca5a5; cursor: pointer; font-size: .72rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s var(--ease);
+}
+.kd-del:hover { background: rgba(239,68,68,.18); border-color: var(--err); transform: scale(1.06); }
+.kd-del:active { transform: scale(.92); }
+
+/* ── BADGE ── */
+.badge-count {
+  background: rgba(37,99,235,.15); color: var(--blue-l);
+  border: 1px solid rgba(37,99,235,.3);
+  border-radius: 20px; padding: 3px 11px;
+  font-size: .63rem; font-family: "JetBrains Mono", monospace; font-weight: 600;
+  transition: transform .2s var(--ease);
+}
+.badge-count.bump { animation: bump .3s var(--ease); }
+@keyframes bump { 0% { transform: scale(1); } 45% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+/* ── SUBMIT BAR ── */
+.submit-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: rgba(11,18,33,.95);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--brd);
+  padding: 13px 16px;
+  transition: background-color .25s var(--ease), border-color .25s var(--ease);
+}
+[data-theme="light"] .submit-bar { background: rgba(245,248,255,.97); }
+.submit-inner { max-width: 560px; margin: 0 auto; }
+.btn-submit {
+  width: 100%; padding: 15px;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: var(--r-sm);
+  font-family: Inter, sans-serif; font-size: .93rem; font-weight: 700;
+  cursor: pointer; letter-spacing: .01em;
+  transition: background-color .18s var(--ease), box-shadow .18s var(--ease), transform .1s var(--ease);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+}
+.btn-submit:hover:not(:disabled)  { background: var(--blue-l); box-shadow: 0 6px 22px rgba(37,99,235,.4); transform: translateY(-1px); }
+.btn-submit:active:not(:disabled) { transform: scale(.99); }
+.btn-submit:disabled { opacity: .4; cursor: not-allowed; }
+.btn-spinner { width: 15px; height: 15px; border: 2px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: spin .65s linear infinite; display: none; }
+.btn-submit.loading .btn-spinner { display: inline-block; }
+.btn-submit.loading .btn-label { opacity: .85; }
+
+/* ── OVERLAY ── */
+#overlay {
+  display: none; position: fixed; inset: 0; z-index: 9000;
+  background: rgba(6,13,26,.82); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+  opacity: 0; transition: opacity .18s var(--ease);
+}
+#overlay.show { display: flex; opacity: 1; }
+.spinner { width: 36px; height: 36px; border: 2.5px solid rgba(37,99,235,.2); border-top-color: var(--blue-l); border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin-txt { font-size: .72rem; color: var(--t2); font-family: "JetBrains Mono", monospace; letter-spacing: .06em; transition: opacity .15s var(--ease); }
+
+/* skeleton shimmer for initial load */
+.skel { background: linear-gradient(90deg, var(--c-600) 25%, var(--c-500) 50%, var(--c-600) 75%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; border-radius: var(--r-sm); }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 86px; left: 16px; right: 16px; max-width: 400px;
+  margin: 0 auto; padding: 12px 15px; border-radius: var(--r-sm);
+  font-size: .82rem; font-weight: 500; display: none; z-index: 9999;
+  border: 1px solid transparent; align-items: center; gap: 9px;
+  box-shadow: 0 10px 30px var(--shadow);
+}
+#toast.showing { display: flex; animation: tUp .22s var(--ease); }
+#toast.leaving { animation: tDown .18s var(--ease) forwards; }
+@keyframes tUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@keyframes tDown { to { opacity:0; transform:translateY(6px); } }
+#toast.success { background:rgba(16,185,129,.12); border-color:rgba(16,185,129,.28); color:#6ee7b7; }
+#toast.error   { background:rgba(239,68,68,.12);  border-color:rgba(239,68,68,.28);  color:#fca5a5; }
+
+@media (min-width: 560px) { #toast { left:auto; right:22px; width:340px; bottom:84px; } }
+@media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation:none!important; transition:none!important; } }
+</style>
+</head>
+<body>
+
+<div id="landing">
+  <div class="landing-card">
+    <div class="landing-mark">📋</div>
+    <div class="landing-eyebrow">GA · CIKARANG PLANT</div>
+    <h1 class="landing-title">WELCOME<br><span>FLAGGERS</span></h1>
+    <p class="landing-sub">Untuk permintaan <strong>ATK</strong>, silakan isi form di bawah ini ya. Prosesnya cepat — tinggal cari nama, pilih barang, dan kirim.</p>
+    <button class="btn-landing" onclick="masukForm()">Isi Form &nbsp;→</button>
+    <div class="landing-foot">PERMINTAAN ALAT TULIS KANTOR</div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-icon">📋</div>
+  <div class="topbar-text">
+    <h1>Form Permintaan ATK</h1>
+    <p>GA · CIKARANG PLANT</p>
+  </div>
+  <div class="topbar-right">
+    <button class="btn-theme" id="theme-btn" onclick="toggleTheme()" aria-label="Ganti tema">🌙</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SUCCESS / DETAIL PERMINTAAN -->
+  <div class="success-box" id="success-box">
+    <div class="success-icon">✓</div>
+    <div class="success-title">Permintaan Terkirim</div>
+    <div class="success-sub">Simpan detail di bawah ini sebagai bukti permintaan kamu.</div>
+
+    <div class="proof-card" id="proof-card">
+      <div class="proof-head">
+        <div class="proof-head-l">
+          <div class="proof-head-icon">📋</div>
+          <div>
+            <div class="proof-head-title">Bukti Permintaan ATK</div>
+            <div class="proof-head-sub">GA · CIKARANG PLANT</div>
+          </div>
+        </div>
+        <div class="proof-status" id="proof-status">Menunggu</div>
+      </div>
+      <div class="proof-body">
+        <div class="proof-grid">
+          <div>
+            <div class="proof-field-label">No. Permintaan</div>
+            <div class="proof-field-value mono" id="proof-reqid">—</div>
+          </div>
+          <div>
+            <div class="proof-field-label">Tanggal</div>
+            <div class="proof-field-value" id="proof-date">—</div>
+          </div>
+          <div>
+            <div class="proof-field-label">Nama Karyawan</div>
+            <div class="proof-field-value" id="proof-nama">—</div>
+          </div>
+          <div>
+            <div class="proof-field-label">Departemen</div>
+            <div class="proof-field-value" id="proof-dept">—</div>
+          </div>
+        </div>
+        <div class="proof-divider"></div>
+        <div class="proof-items-label">
+          <span>Detail Barang</span>
+          <span id="proof-items-count">0 item</span>
+        </div>
+        <div id="proof-items-list"></div>
+      </div>
+      <div class="proof-foot">
+        <span>Helper: <span id="proof-helper">—</span></span>
+        <span id="proof-time">—</span>
+      </div>
+    </div>
+
+    <div class="proof-note">
+      <span class="proof-note-icon">📸</span>
+      <span><strong>Ambil screenshot</strong> bukti permintaan di atas, lalu tunjukkan ke staff GA sebagai konfirmasi pengambilan barang.</span>
+    </div>
+
+    <div class="proof-actions">
+      <button class="btn-shot" id="btn-shot" onclick="siapkanScreenshot()">📸 &nbsp;Siap di-screenshot</button>
+      <button class="btn-new" onclick="resetForm()">＋ &nbsp;Buat Permintaan Baru</button>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div id="the-form">
+
+    <!-- IDENTITAS -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-label">👤 &nbsp;Identitas Pemohon</div>
+      </div>
+      <div class="section-body">
+        <div class="field-g ac-wrap">
+          <label class="lbl">Cari Nama Karyawan <span class="req">*</span></label>
+          <input id="nama-search" type="text" placeholder="Ketik nama..." autocomplete="off">
+          <input id="nik" type="hidden">
+          <div class="ac-list" id="ac-karyawan"></div>
+          <div class="hint" id="nik-hint"></div>
+        </div>
+        <div class="row-2">
+          <div class="field-g">
+            <label class="lbl">Nama Lengkap</label>
+            <input id="nama" type="text" readonly placeholder="Otomatis">
+          </div>
+          <div class="field-g">
+            <label class="lbl">Departemen</label>
+            <input id="dept" type="text" readonly placeholder="Otomatis">
+          </div>
+        </div>
+        <div class="field-g" style="margin-bottom:0">
+          <label class="lbl">Helper / Pengantar</label>
+          <input id="helper" type="text" placeholder="Opsional">
+        </div>
+      </div>
+    </div>
+
+    <!-- BARANG -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-label">📦 &nbsp;Daftar Barang</div>
+        <div class="badge-count" id="badge-count">0 item</div>
+      </div>
+      <div class="section-body">
+        <div class="field-g ac-wrap">
+          <label class="lbl">Cari Nama Barang <span class="req">*</span></label>
+          <input id="barang-search" type="text" placeholder="Ketik nama barang..." autocomplete="off">
+          <input id="barang-kode" type="hidden">
+          <div class="ac-list" id="ac-barang"></div>
+          <div class="hint" id="stok-hint">Pilih barang untuk melihat stok</div>
+        </div>
+        <div class="add-qty-row">
+          <div class="field-g" style="margin-bottom:0">
+            <label class="lbl">Jumlah <span class="req">*</span></label>
+            <input id="jumlah" type="number" min="1" placeholder="0">
+          </div>
+          <div class="field-g" style="margin-bottom:0">
+            <label class="lbl">Satuan</label>
+            <input id="satuan" type="text" readonly placeholder="—">
+          </div>
+        </div>
+        <button class="btn-add" id="btn-add" onclick="tambahItem()">＋ &nbsp;Tambah ke Daftar</button>
+
+        <!-- keranjang -->
+        <div class="kd-wrap" id="kd-wrap" style="display:none">
+          <div class="kd-head"><div>Barang</div><div>Jml</div><div>Satuan</div><div></div></div>
+          <div id="kd-list"></div>
+        </div>
+        <div class="kd-empty" id="kd-empty">Belum ada barang ditambahkan</div>
+      </div>
+    </div>
+
+  </div><!-- /the-form -->
+</div>
+
+<div class="submit-bar" id="submit-bar">
+  <div class="submit-inner">
+    <button class="btn-submit" id="btn-submit" onclick="submitForm()">
+      <span class="btn-spinner"></span>
+      <span class="btn-label">Kirim Permintaan</span>
+    </button>
+  </div>
+</div>
+
+<div id="overlay"><div class="spinner"></div><div class="spin-txt" id="spin-txt">Memproses...</div></div>
+<div id="toast"></div>
+
+<script>
+var SB_URL = 'https://czihqiflotknmiiigoif.supabase.co';
+var SB_KEY = 'sb_publishable_ryk9HVOJPkn8uUQyvnQlzQ_m2i_8W-a';
+var masterBarang = [], masterKaryawan = [], keranjang = [];
+var acKaryawanIndex = -1, acBarangIndex = -1;
+
+/* ── THEME ── */
+function toggleTheme() {
+  var el = document.documentElement;
+  var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  el.setAttribute('data-theme', next);
+  document.getElementById('theme-btn').textContent = next === 'dark' ? '🌙' : '☀️';
+  localStorage.setItem('atk_theme', next);
+}
+(function () {
+  var t = localStorage.getItem('atk_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('theme-btn').textContent = t === 'dark' ? '🌙' : '☀️';
+  });
+})();
+
+/* ── API ── */
+async function sb(method, path, body) {
+  var r = await fetch(SB_URL + '/rest/v1/' + path, {
+    method: method,
+    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'Prefer': method === 'POST' ? 'return=representation' : '' },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  var t = await r.text();
+  if (!r.ok) throw new Error('SB ' + r.status + ': ' + t);
+  return (!t || t === 'null') ? [] : JSON.parse(t);
+}
+function genId(p) {
+  var w = new Date(Date.now() + 7 * 3600000), pad = function(n){return String(n).padStart(2,'0');};
+  return p+'-'+w.getUTCFullYear()+pad(w.getUTCMonth()+1)+pad(w.getUTCDate())+'-'+pad(w.getUTCHours())+pad(w.getUTCMinutes())+pad(w.getUTCSeconds());
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', async function () {
+  load(true, 'Memuat data...');
+  try {
+    var res = await Promise.all([
+      sb('GET', 'master_barang?select=kode_barang,nama_barang,satuan,stok,stok_minimum&is_active=eq.true&order=nama_barang.asc'),
+      sb('GET', 'master_karyawan?select=nik,nama,departemen&is_active=eq.true&order=nama.asc')
+    ]);
+    masterBarang   = res[0];
+    masterKaryawan = res[1];
+  } catch (e) { toast('Gagal memuat data: ' + e.message, 'error'); }
+  load(false);
+});
+
+/* ══════════════ AUTOCOMPLETE ENGINE (shared logic) ══════════════ */
+function highlight(text, q) {
+  if (!q) return esc(text);
+  var idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return esc(text);
+  return esc(text.slice(0, idx)) + '<mark>' + esc(text.slice(idx, idx + q.length)) + '</mark>' + esc(text.slice(idx + q.length));
+}
+function rankMatches(list, q, getName) {
+  q = q.trim().toLowerCase();
+  if (!q) return [];
+  var starts = [], contains = [];
+  list.forEach(function (item) {
+    var name = getName(item).toLowerCase();
+    if (name.startsWith(q)) starts.push(item);
+    else if (name.includes(q)) contains.push(item);
+  });
+  return starts.concat(contains).slice(0, 8);
+}
+
+/* ── KARYAWAN AUTOCOMPLETE ── */
+var inputKaryawan = document.getElementById('nama-search');
+var listKaryawanEl = document.getElementById('ac-karyawan');
+
+inputKaryawan.addEventListener('input', function () {
+  clearId();
+  renderKaryawanList(this.value);
+});
+inputKaryawan.addEventListener('focus', function () { if (this.value.trim()) renderKaryawanList(this.value); });
+inputKaryawan.addEventListener('keydown', function (e) { acKeyNav(e, listKaryawanEl, 'karyawan'); });
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('#nama-search') && !e.target.closest('#ac-karyawan')) closeAcList(listKaryawanEl);
+});
+
+function renderKaryawanList(q) {
+  q = q.trim();
+  acKaryawanIndex = -1;
+  if (!q) return closeAcList(listKaryawanEl);
+  var matches = rankMatches(masterKaryawan, q, function (k) { return k.nama; });
+  if (!matches.length) {
+    listKaryawanEl.innerHTML = '<div class="ac-empty">Nama tidak ditemukan</div>';
+    openAcList(listKaryawanEl);
+    document.getElementById('nik-hint').textContent = 'Nama tidak ditemukan dalam database';
+    document.getElementById('nik-hint').className = 'hint err';
+    return;
+  }
+  listKaryawanEl.innerHTML = matches.map(function (k, i) {
+    return '<div class="ac-item" data-i="' + i + '" onclick="pilihKaryawan(\'' + k.nik + '\')">'
+      + '<span class="ac-item-name">' + highlight(k.nama, q) + '</span>'
+      + '<span class="ac-item-meta">' + esc(k.departemen) + '</span>'
+      + '</div>';
+  }).join('');
+  listKaryawanEl._matches = matches;
+  openAcList(listKaryawanEl);
+}
+function pilihKaryawan(nik) {
+  var found = masterKaryawan.find(function (k) { return k.nik === nik; });
+  if (!found) return;
+  document.getElementById('nik').value  = found.nik;
+  document.getElementById('nama').value = found.nama;
+  document.getElementById('dept').value = found.departemen;
+  inputKaryawan.value = found.nama;
+  var hint = document.getElementById('nik-hint');
+  hint.textContent = '✓ NIK: ' + found.nik + ' · ' + found.departemen;
+  hint.className = 'hint ok';
+  closeAcList(listKaryawanEl);
+}
+function clearId() {
+  document.getElementById('nik').value  = '';
+  document.getElementById('nama').value = '';
+  document.getElementById('dept').value = '';
+  var hint = document.getElementById('nik-hint');
+  if (!inputKaryawan.value.trim()) { hint.textContent = ''; hint.className = 'hint'; }
+}
+
+/* ── BARANG AUTOCOMPLETE ── */
+var inputBarang = document.getElementById('barang-search');
+var listBarangEl = document.getElementById('ac-barang');
+
+inputBarang.addEventListener('input', function () {
+  clearBarangPick();
+  renderBarangList(this.value);
+});
+inputBarang.addEventListener('focus', function () { if (this.value.trim()) renderBarangList(this.value); });
+inputBarang.addEventListener('keydown', function (e) { acKeyNav(e, listBarangEl, 'barang'); });
+document.addEventListener('click', function (e) {
+  if (!e.target.closest('#barang-search') && !e.target.closest('#ac-barang')) closeAcList(listBarangEl);
+});
+
+function renderBarangList(q) {
+  q = q.trim();
+  acBarangIndex = -1;
+  if (!q) return closeAcList(listBarangEl);
+  var matches = rankMatches(masterBarang, q, function (b) { return b.nama_barang; });
+  if (!matches.length) {
+    listBarangEl.innerHTML = '<div class="ac-empty">Barang tidak ditemukan</div>';
+    openAcList(listBarangEl);
+    return;
+  }
+  listBarangEl.innerHTML = matches.map(function (b, i) {
+    var stok = parseInt(b.stok) || 0, min = parseInt(b.stok_minimum) || 5;
+    var metaClass = stok === 0 ? 'err' : (stok <= min ? 'warn' : '');
+    var metaText  = stok === 0 ? 'Habis' : ('Stok ' + stok + ' ' + (b.satuan || ''));
+    return '<div class="ac-item" data-i="' + i + '" onclick="pilihBarang(\'' + b.kode_barang + '\')">'
+      + '<span class="ac-item-name">' + highlight(b.nama_barang, q) + '</span>'
+      + '<span class="ac-item-meta ' + metaClass + '">' + esc(metaText) + '</span>'
+      + '</div>';
+  }).join('');
+  listBarangEl._matches = matches;
+  openAcList(listBarangEl);
+}
+function pilihBarang(kode) {
+  var found = masterBarang.find(function (b) { return b.kode_barang === kode; });
+  if (!found) return;
+  document.getElementById('barang-kode').value = found.kode_barang;
+  inputBarang.value = found.nama_barang;
+  document.getElementById('satuan').value = found.satuan || '';
+  closeAcList(listBarangEl);
+  applyStokHint(found);
+  document.getElementById('jumlah').focus();
+}
+function clearBarangPick() {
+  document.getElementById('barang-kode').value = '';
+  document.getElementById('satuan').value = '';
+  if (!inputBarang.value.trim()) {
+    document.getElementById('stok-hint').textContent = 'Pilih barang untuk melihat stok';
+    document.getElementById('stok-hint').className = 'hint';
+  }
+}
+function applyStokHint(b) {
+  var hint = document.getElementById('stok-hint');
+  var stok = parseInt(b.stok) || 0, min = parseInt(b.stok_minimum) || 5;
+  if (stok === 0)       { hint.textContent = 'Stok habis — tidak dapat dipesan'; hint.className = 'hint err'; }
+  else if (stok <= min) { hint.textContent = 'Hampir habis: ' + stok + ' ' + b.satuan; hint.className = 'hint warn'; }
+  else                  { hint.textContent = 'Stok: ' + stok + ' ' + b.satuan; hint.className = 'hint ok'; }
+}
+
+/* ── SHARED AUTOCOMPLETE UI HELPERS ── */
+function openAcList(el) { el.classList.add('show'); }
+function closeAcList(el) { el.classList.remove('show'); }
+function acKeyNav(e, listEl, type) {
+  if (!listEl.classList.contains('show')) return;
+  var items = listEl.querySelectorAll('.ac-item');
+  if (!items.length) return;
+  var idxVar = type === 'karyawan' ? 'acKaryawanIndex' : 'acBarangIndex';
+  var cur = window[idxVar];
+  if (e.key === 'ArrowDown') { e.preventDefault(); cur = Math.min(cur + 1, items.length - 1); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); cur = Math.max(cur - 1, 0); }
+  else if (e.key === 'Enter') { e.preventDefault(); if (cur >= 0) items[cur].click(); return; }
+  else if (e.key === 'Escape') { closeAcList(listEl); return; }
+  else return;
+  items.forEach(function (it) { it.classList.remove('active'); });
+  items[cur].classList.add('active');
+  items[cur].scrollIntoView({ block: 'nearest' });
+  window[idxVar] = cur;
+}
+
+/* ── KERANJANG ── */
+function tambahItem() {
+  var kode   = document.getElementById('barang-kode').value;
+  var jumlah = parseInt(document.getElementById('jumlah').value);
+  if (!kode)                 return toast('Pilih barang dari daftar pencarian', 'error');
+  var found = masterBarang.find(function (b) { return b.kode_barang === kode; });
+  if (!found)                return toast('Barang tidak valid', 'error');
+  if (!jumlah || jumlah <= 0) return toast('Jumlah harus lebih dari 0', 'error');
+  var stok = parseInt(found.stok) || 0;
+  if (stok === 0)    return toast('Stok habis', 'error');
+  if (jumlah > stok) return toast('Jumlah melebihi stok (' + stok + ')', 'error');
+  var exist = keranjang.find(function (i) { return i.kode === kode; });
+  if (exist) {
+    if (exist.qty + jumlah > stok) return toast('Total melebihi stok. Di daftar: ' + exist.qty, 'error');
+    exist.qty += jumlah;
+  } else {
+    keranjang.push({ kode: kode, nama: found.nama_barang, qty: jumlah, satuan: found.satuan || '' });
+  }
+  renderKeranjang(true);
+  var btn = document.getElementById('btn-add');
+  btn.classList.remove('pulse'); void btn.offsetWidth; btn.classList.add('pulse');
+
+  document.getElementById('jumlah').value = '';
+  document.getElementById('satuan').value = '';
+  inputBarang.value = '';
+  document.getElementById('barang-kode').value = '';
+  document.getElementById('stok-hint').textContent = 'Pilih barang untuk melihat stok';
+  document.getElementById('stok-hint').className = 'hint';
+}
+function hapus(i) {
+  var rows = document.querySelectorAll('.kd-row');
+  if (rows[i]) {
+    rows[i].classList.add('removing');
+    setTimeout(function () { keranjang.splice(i, 1); renderKeranjang(); }, 160);
+  } else {
+    keranjang.splice(i, 1); renderKeranjang();
+  }
+}
+function renderKeranjang(bump) {
+  var badge = document.getElementById('badge-count');
+  badge.textContent = keranjang.length + ' item';
+  if (bump) { badge.classList.remove('bump'); void badge.offsetWidth; badge.classList.add('bump'); }
+  var wrap  = document.getElementById('kd-wrap');
+  var empty = document.getElementById('kd-empty');
+  if (!keranjang.length) { wrap.style.display = 'none'; empty.style.display = ''; return; }
+  empty.style.display = 'none'; wrap.style.display = '';
+  document.getElementById('kd-list').innerHTML = keranjang.map(function (item, i) {
+    return '<div class="kd-row">'
+      + '<div class="kd-name">' + esc(item.nama) + '</div>'
+      + '<div class="kd-qty">' + item.qty + '</div>'
+      + '<div class="kd-sat">' + esc(item.satuan) + '</div>'
+      + '<button class="kd-del" onclick="hapus(' + i + ')" aria-label="Hapus">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+/* ── LANDING ── */
+function masukForm() {
+  document.getElementById('landing').classList.add('hide');
+  setTimeout(function () { document.getElementById('nama-search').focus(); }, 300);
+}
+
+/* ── KARTU BUKTI PERMINTAAN ── */
+var BULAN_ID = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+function formatTanggalJam(iso) {
+  var d = new Date(new Date(iso).getTime() + 7 * 3600000);
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  return {
+    tanggal: d.getUTCDate() + ' ' + BULAN_ID[d.getUTCMonth()] + ' ' + d.getUTCFullYear(),
+    jam: pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()) + ' WIB'
+  };
+}
+function isiKartuBukti(reqId, nama, dept, helper, isoNow) {
+  var dt = formatTanggalJam(isoNow);
+  document.getElementById('proof-reqid').textContent = reqId;
+  document.getElementById('proof-date').textContent  = dt.tanggal;
+  document.getElementById('proof-nama').textContent  = nama;
+  document.getElementById('proof-dept').textContent  = dept || '—';
+  document.getElementById('proof-helper').textContent = helper || '—';
+  document.getElementById('proof-time').textContent  = 'Dikirim ' + dt.jam;
+  document.getElementById('proof-items-count').textContent = keranjang.length + ' item';
+  document.getElementById('proof-items-list').innerHTML = keranjang.map(function (item) {
+    return '<div class="proof-item-row">'
+      + '<div class="proof-item-name">' + esc(item.nama) + '</div>'
+      + '<div class="proof-item-qty">' + item.qty + ' ' + esc(item.satuan) + '</div>'
+      + '</div>';
+  }).join('');
+  var btn = document.getElementById('btn-shot');
+  btn.classList.remove('copied');
+  btn.innerHTML = '📸 &nbsp;Siap di-screenshot';
+}
+function siapkanScreenshot() {
+  var btn = document.getElementById('btn-shot');
+  btn.classList.add('copied');
+  btn.innerHTML = '✓ &nbsp;Tunjukkan kartu ini ke staff GA';
+  toast('Silakan screenshot kartu bukti di atas', 'success');
+}
+
+/* ── SUBMIT ── */
+async function submitForm() {
+  var nik    = document.getElementById('nik').value.trim();
+  var nama   = document.getElementById('nama').value.trim();
+  var dept   = document.getElementById('dept').value.trim();
+  var helper = document.getElementById('helper').value.trim();
+  if (!nik)              return toast('Pilih karyawan dari daftar', 'error');
+  if (!keranjang.length) return toast('Tambahkan minimal 1 barang', 'error');
+  if (!confirm('Kirim ' + keranjang.length + ' item atas nama ' + nama + '?')) return;
+
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.querySelector('.btn-label').textContent = 'Memvalidasi stok...';
+  load(true, 'Memvalidasi stok...');
+  try {
+    var checks = await Promise.all(keranjang.map(function (item) {
+      return sb('GET', 'master_barang?select=stok,nama_barang&kode_barang=eq.' + encodeURIComponent(item.kode));
+    }));
+    for (var i = 0; i < keranjang.length; i++) {
+      if (!checks[i] || !checks[i].length) throw new Error('Barang tidak ditemukan: ' + keranjang[i].nama);
+      if (parseInt(checks[i][0].stok) < keranjang[i].qty) throw new Error('Stok tidak cukup: "' + keranjang[i].nama + '" (sisa ' + checks[i][0].stok + ')');
+    }
+    btn.querySelector('.btn-label').textContent = 'Mengirim permintaan...';
+    load(true, 'Mengirim permintaan...');
+    var reqId = genId('REQ'), now = new Date().toISOString();
+    await sb('POST', 'permintaan_header', { request_id: reqId, tanggal: now.split('T')[0], nik: nik, nama: nama, departemen: dept, nama_helper: helper, status: 'pending', created_at: now });
+    await Promise.all(keranjang.map(function (item) {
+      return sb('POST', 'permintaan_detail', { request_id: reqId, kode_barang: item.kode, nama_barang: item.nama, jumlah: item.qty, satuan: item.satuan, created_at: now });
+    }));
+    isiKartuBukti(reqId, nama, dept, helper, now);
+    document.getElementById('success-box').classList.add('show');
+    document.getElementById('the-form').style.display  = 'none';
+    document.getElementById('submit-bar').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    load(false);
+  } catch (e) {
+    toast('Gagal: ' + e.message, 'error');
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.querySelector('.btn-label').textContent = 'Kirim Permintaan';
+    load(false);
+  }
+}
+function resetForm() {
+  keranjang = []; renderKeranjang();
+  ['nik','nama','dept','helper'].forEach(function (id) { document.getElementById(id).value = ''; });
+  inputKaryawan.value = '';
+  document.getElementById('nik-hint').textContent = '';
+  document.getElementById('nik-hint').className = 'hint';
+  inputBarang.value = '';
+  document.getElementById('barang-kode').value = '';
+  document.getElementById('jumlah').value = '';
+  document.getElementById('satuan').value = '';
+  document.getElementById('stok-hint').textContent = 'Pilih barang untuk melihat stok';
+  document.getElementById('stok-hint').className = 'hint';
+  document.getElementById('success-box').classList.remove('show');
+  document.getElementById('the-form').style.display   = '';
+  document.getElementById('submit-bar').style.display  = '';
+  var shotBtn = document.getElementById('btn-shot');
+  shotBtn.classList.remove('copied');
+  shotBtn.innerHTML = '📸 &nbsp;Siap di-screenshot';
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  btn.querySelector('.btn-label').textContent = 'Kirim Permintaan';
+}
+
+/* ── HELPERS ── */
+function load(on, txt) {
+  var ov = document.getElementById('overlay');
+  ov.classList.toggle('show', on);
+  if (txt) document.getElementById('spin-txt').textContent = txt;
+}
+function toast(msg, type) {
+  var el = document.getElementById('toast');
+  clearTimeout(el._t); clearTimeout(el._t2);
+  el.classList.remove('leaving');
+  el.textContent = msg;
+  el.className = type + ' showing';
+  el._t = setTimeout(function () {
+    el.classList.add('leaving');
+    el._t2 = setTimeout(function () { el.className = type; }, 180);
+  }, 3600);
+}
+function esc(s) { return s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
